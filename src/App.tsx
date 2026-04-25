@@ -10,8 +10,10 @@ function App() {
     <BrowserRouter>
       <nav className="nav">
         <div className="nav-brand">
-          <span className="nav-brand-peak">PEAK</span>
-          <span className="nav-brand-year">'25</span>
+  <img src="/logo.png" alt="PEAK Logo" style={{ height: 36, filter: 'invert(1)', marginRight: 10, verticalAlign: 'middle' }} />
+  <span className="nav-brand-peak">PEAK</span>
+  <span className="nav-brand-year">'25</span>
+</div>
         </div>
         <div className="nav-links">
           <NavLink to="/" end className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
