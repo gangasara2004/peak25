@@ -85,19 +85,38 @@ function AdminDashboard() {
       console.warn('Email notification failed (non-critical):', e)
     }
   }
+const updateStatus = async (id: string, status: RegistrationStatus) => {
+  setActionLoading(true)
+  const { error } = await supabase
+    .from('registrations')
+    .update({ status, admin_note: adminNote || null })
+    .eq('id', id)
 
-  const updateStatus = async (id: string, status: RegistrationStatus) => {
-    setActionLoading(true)
-    const { error } = await supabase.from('registrations').update({ status, admin_note: adminNote || null }).eq('id', id)
-    if (!error) {
-      // Send email notification
-      const reg = registrations.find(r => r.id === id)
-      if (reg) await sendEmailNotification({ ...reg, status }, status)
-      showToast(status === 'approved' ? '✓ Approved & email sent!' : status === 'rejected' ? '✗ Rejected & email sent.' : '↩ Moved to pending.')
-      setSelected(null); setAdminNote(''); fetchAll()
+  if (!error) {
+    const { data: updatedReg } = await supabase
+      .from('registrations')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (updatedReg) {
+      try {
+        const { error: fnError } = await supabase.functions.invoke('send-ticket-email', {
+          body: { registration: updatedReg, status },
+        })
+        if (fnError) console.error('Email error:', fnError)
+        showToast(status === 'approved' ? '✓ Approved & email sent!' : '✗ Rejected & email sent.')
+      } catch (e) {
+        console.error('Email failed:', e)
+        showToast(status === 'approved' ? '✓ Approved (email failed)' : '✗ Rejected (email failed)')
+      }
     }
-    setActionLoading(false)
+    setSelected(null)
+    setAdminNote('')
+    fetchAll()
   }
+  setActionLoading(false)
+}
 
   // CSV Export
   const exportCSV = () => {
