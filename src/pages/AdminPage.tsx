@@ -76,15 +76,26 @@ function AdminDashboard() {
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3500) }
 
-  const sendEmailNotification = async (reg: Registration, status: RegistrationStatus) => {
-    try {
-      await supabase.functions.invoke('send-ticket-email', {
-        body: { registration: reg, status },
-      })
-    } catch (e) {
-      console.warn('Email notification failed (non-critical):', e)
-    }
+const sendEmailNotification = async (reg: Registration, status: RegistrationStatus) => {
+  try {
+    const emailjs = await import('@emailjs/browser')
+    await emailjs.send(
+      'YOUR_SERVICE_ID',    // ← paste your Service ID
+      'YOUR_TEMPLATE_ID',   // ← paste your Template ID
+      {
+        to_email: reg.email,
+        name: reg.full_name,
+        school: reg.school,
+        food: reg.food_preference,
+        ticket_id: reg.ticket_id,
+        status: status,
+      },
+      'YOUR_PUBLIC_KEY'     // ← paste your Public Key
+    )
+  } catch (e) {
+    console.error('Email failed:', e)
   }
+}
 const updateStatus = async (id: string, status: RegistrationStatus) => {
   setActionLoading(true)
   const { error } = await supabase
