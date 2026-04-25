@@ -150,7 +150,7 @@ export default function RegisterPage() {
                 </div>
               </div>
               <div className="field">
-                <label>Payment Slip</label>
+                <label>Payment Slip <span style={{ color: 'var(--error, #f87171)', fontSize: 12 }}>* required</span></label>
                 <div className={`dropzone ${dragOver ? 'dragover' : ''} ${form.slip ? 'has-file' : ''}`}
                   onClick={() => fileRef.current?.click()}
                   onDragOver={e => { e.preventDefault(); setDragOver(true) }}
