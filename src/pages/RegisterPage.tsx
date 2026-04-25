@@ -109,6 +109,7 @@ export default function RegisterPage() {
       <div className="reg-hero">
         <div className="reg-hero-glow" />
         <div className="reg-hero-inner">
+          <img src="/logo.png" alt="PEAK" style={{ height: 64, filter: 'invert(1)', marginBottom: 16, opacity: 0.9 }} />
           <div className="reg-event-tag">Pre Engineering Association Kandy</div>
           <h1 className="reg-title">PEAK <span className="reg-title-year">'25</span></h1>
           <p className="reg-subtitle">MEETUP · The Gathering of Future Engineers</p>
