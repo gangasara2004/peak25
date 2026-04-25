@@ -14,7 +14,7 @@ function App() {
   <span className="nav-brand-peak">PEAK</span>
   <span className="nav-brand-year">'25</span>
 </div>
-        </div>
+        
         <div className="nav-links">
           <NavLink to="/" end className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
             Register
