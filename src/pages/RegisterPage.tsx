@@ -130,15 +130,15 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               <div className="grid-2">
-                <div className="field"><label>Full Name</label><input type="text" placeholder="e.g. Kasun Perera" value={form.full_name} onChange={e => set('full_name', e.target.value)} /></div>
-                <div className="field"><label>Email Address</label><input type="email" placeholder="e.g. kasun@email.com" value={form.email} onChange={e => set('email', e.target.value)} /></div>
+                <div className="field"><label>Full Name</label><input type="text" placeholder="e.g. Gangasara Jayawickrama" value={form.full_name} onChange={e => set('full_name', e.target.value)} /></div>
+                <div className="field"><label>Email Address</label><input type="email" placeholder="e.g. gk@gmail.com" value={form.email} onChange={e => set('email', e.target.value)} /></div>
               </div>
               <div className="grid-2">
                 <div className="field"><label>Phone Number</label><input type="tel" placeholder="07X XXX XXXX" value={form.phone} onChange={e => set('phone', e.target.value)} /></div>
-                <div className="field"><label>NIC Number</label><input type="text" placeholder="e.g. 200012345678" value={form.nic} onChange={e => set('nic', e.target.value)} /></div>
+                <div className="field"><label>NIC Number</label><input type="text" placeholder="e.g. 200XXXXXXXXX" value={form.nic} onChange={e => set('nic', e.target.value)} /></div>
               </div>
               <div className="grid-2">
-                <div className="field"><label>School / Institution</label><input type="text" placeholder="e.g. Dharmaraja College, Kandy" value={form.school} onChange={e => set('school', e.target.value)} /></div>
+                <div className="field"><label>School / Institution</label><input type="text" placeholder="e.g. Kingswood College, Kandy" value={form.school} onChange={e => set('school', e.target.value)} /></div>
                 <div className="field">
                   <label>Food Preference</label>
                   <select value={form.food_preference} onChange={e => set('food_preference', e.target.value)}>
