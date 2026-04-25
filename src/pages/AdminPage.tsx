@@ -90,7 +90,7 @@ const sendEmailNotification = async (reg: Registration, status: RegistrationStat
 
         'Content-Type': 'application/json',
 
-        'api-key': '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',
+        'api-key': import.meta.env.VITE_BREVO_API_KEY,
 
       },
 
