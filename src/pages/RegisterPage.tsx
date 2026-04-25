@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
 // ── SET YOUR EVENT DATE HERE ──────────────────────────────
-const EVENT_DATE = new Date('2025-08-15T09:00:00')
+const EVENT_DATE = new Date('2026-05-16T08:00:00')
 // ─────────────────────────────────────────────────────────
 
 type Step = 'form' | 'success'
