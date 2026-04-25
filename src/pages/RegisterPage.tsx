@@ -34,6 +34,7 @@ export default function RegisterPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [dragOver, setDragOver] = useState(false)
+  const [slipError, setSlipError] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const countdown = useCountdown(EVENT_DATE)
 
@@ -71,7 +72,13 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const err = validate(); if (err) { setError(err); return }
+    const err = validate(); 
+    if (err) {
+  setError(err)
+  if (!form.slip) setSlipError(true)  // ← add this
+  return
+}
+    setSlipError(false)
     setError(''); setSubmitting(true)
     try {
       const ext = form.slip!.name.split('.').pop()
