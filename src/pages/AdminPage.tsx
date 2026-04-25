@@ -87,7 +87,7 @@ const sendEmailNotification = async (reg: Registration, status: RegistrationStat
         'api-key': import.meta.env.VITE_BREVO_API_KEY,
       },
       body: JSON.stringify({
-        sender: { name: "PEAK '25 Meetup", email: 'your@gmail.com' },
+        sender: { name: "PEAK '25 Meetup", email: 'gangasarajayawickrama@gmail.com' },
         to: [{ email: reg.email, name: reg.full_name }],
         subject: status === 'approved' ? "✅ Your PEAK '25 ticket is confirmed!" : "❌ PEAK '25 — Payment not verified",
         htmlContent: status === 'approved'
