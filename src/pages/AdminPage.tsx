@@ -285,6 +285,22 @@ function AdminDashboard() {
                 ↩ Move Back to Pending
               </button>
             )}
+            <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
+              <button
+                className="btn btn--full"
+                style={{ background: 'transparent', border: '1px solid rgba(255,77,109,0.3)', color: 'var(--danger)', fontSize: 13 }}
+                onClick={async () => {
+                  if (!confirm(`Delete registration for ${selected.full_name}? This cannot be undone.`)) return
+                  setActionLoading(true)
+                  const { error } = await supabase.from('registrations').delete().eq('id', selected.id)
+                  if (!error) { showToast('🗑 Registration deleted.'); setSelected(null); fetchAll() }
+                  setActionLoading(false)
+                }}
+                disabled={actionLoading}
+              >
+                🗑 Delete Registration
+              </button>
+            </div>
           </div>
         </div>
       )}
