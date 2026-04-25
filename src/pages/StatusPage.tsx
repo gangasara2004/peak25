@@ -151,8 +151,8 @@ function ApprovedCard({ reg }: { reg: Registration }) {
           <div class="ticket-body">
             <div class="ticket-name">${reg.full_name}</div>
             <div class="ticket-details">${reg.school} · ${reg.food_preference}</div>
-            <div class="ticket-qr" id="qr-placeholder">
-              [QR Code - screenshot the QR from the web page]
+            <div class="ticket-qr">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrValue)}" width="200" height="200" />
             </div>
             <div class="ticket-id">Ticket ID: ${reg.ticket_id}</div>
           </div>
