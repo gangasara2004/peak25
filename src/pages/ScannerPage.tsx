@@ -72,6 +72,7 @@ function Scanner() {
     setResult(null)
     const html5Qr = new Html5Qrcode('qr-reader')
     scannerRef.current = html5Qr
+    setScanning(true)
     try {
       await html5Qr.start(
         { facingMode: 'environment' },
@@ -185,7 +186,7 @@ function Scanner() {
 
         {/* Scanner */}
         <div className="card" style={{ marginBottom: 20 }}>
-          <div id="qr-reader" style={{ width: '100%', display: scanning ? 'block' : 'none', borderRadius: 8, overflow: 'hidden', marginBottom: 12 }} />
+          <div id="qr-reader" style={{ width: '100%', borderRadius: 8, overflow: 'hidden', marginBottom: 12, minHeight: scanning ? 'auto' : 0 }} />
           {!scanning && !processing && !result && (
             <div style={{ textAlign: 'center', padding: '20px 0' }}>
               <div style={{ fontSize: 52, marginBottom: 12 }}>📸</div>
