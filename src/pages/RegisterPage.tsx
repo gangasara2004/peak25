@@ -230,11 +230,11 @@ function SuccessScreen({ email }: { email: string }) {
           Once approved, you'll receive a <strong style={{ color: 'var(--text)' }}>confirmation email</strong> with your QR ticket.
         </p>
         <div style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--radius)', padding: '14px 20px', marginBottom: 24, fontSize: 14 }}>
-          <span style={{ color: 'var(--text-muted)' }}>Check status anytime → </span>
-          <strong style={{ color: 'var(--cyan)' }}>/status</strong>
+          <span style={{ color: 'var(--text-muted)' }}>Check status anytime </span>
+          <strong style={{ color: 'var(--cyan)' }}>status</strong>
           <span style={{ color: 'var(--text-muted)' }}> using <strong style={{ color: 'var(--text)' }}>{email}</strong></span>
         </div>
-        <a href="/status" className="btn btn--primary">Check My Ticket →</a>
+        <a href="/status" className="btn btn--primary" onClick={(e) => { e.preventDefault(); window.location.href = '/status' }}>Check My Ticket →</a>
       </div>
     </div>
   )
