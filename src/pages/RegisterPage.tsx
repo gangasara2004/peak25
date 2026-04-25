@@ -126,6 +126,11 @@ export default function RegisterPage() {
           ) : (
             <div className="countdown-over">🎉 The event is happening now!</div>
           )}
+          <div className="event-meta">
+            <span>📅 16th May 2026</span>
+            <span className="event-meta-divider">·</span>
+            <span>📍 YMBA Hall - Kandy </span>
+          </div>
         </div>
       </div>
 
@@ -213,6 +218,8 @@ export default function RegisterPage() {
         .dropzone-icon { font-size: 22px; font-weight: 700; }
         .dropzone-filename { font-weight: 500; }
         .dropzone-size { color: var(--text-muted); font-size: 12px; }
+        .event-meta { display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 16px; font-size: 14px; color: var(--text-muted); flex-wrap: wrap; }
+        .event-meta-divider { color: var(--border-hover); }
         @media (max-width: 480px) { .countdown { gap: 8px; padding: 12px 16px; } .countdown-num { font-size: 26px; } .countdown-block { min-width: 40px; } }
       `}</style>
     </div>
