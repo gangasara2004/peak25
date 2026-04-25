@@ -80,8 +80,8 @@ const sendEmailNotification = async (reg: Registration, status: RegistrationStat
   try {
     const emailjs = await import('@emailjs/browser')
     await emailjs.send(
-      'YOUR_SERVICE_ID',    // ← paste your Service ID
-      'YOUR_TEMPLATE_ID',   // ← paste your Template ID
+      'service_j06jpzk',    // ← paste your Service ID
+      'template_w61kkyn',   // ← paste your Template ID
       {
         to_email: reg.email,
         name: reg.full_name,
@@ -90,7 +90,7 @@ const sendEmailNotification = async (reg: Registration, status: RegistrationStat
         ticket_id: reg.ticket_id,
         status: status,
       },
-      'YOUR_PUBLIC_KEY'     // ← paste your Public Key
+      '_BdbsOdT1NRcQoTDl'     // ← paste your Public Key
     )
   } catch (e) {
     console.error('Email failed:', e)
