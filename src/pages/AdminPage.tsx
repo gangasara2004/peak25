@@ -79,45 +79,25 @@ function AdminDashboard() {
 
 
 const sendEmailNotification = async (reg: Registration, status: RegistrationStatus) => {
-
   try {
-
     await fetch('https://api.brevo.com/v3/smtp/email', {
-
       method: 'POST',
-
       headers: {
-
         'Content-Type': 'application/json',
-
         'api-key': import.meta.env.VITE_BREVO_API_KEY,
-
       },
-
       body: JSON.stringify({
-
-        sender: { name: "PEAK '25 Meetup", email: 'gangasarajayawickrama@gmail.com' },
-
+        sender: { name: "PEAK '25 Meetup", email: 'your@gmail.com' },
         to: [{ email: reg.email, name: reg.full_name }],
-
         subject: status === 'approved' ? "✅ Your PEAK '25 ticket is confirmed!" : "❌ PEAK '25 — Payment not verified",
-
         htmlContent: status === 'approved'
-
           ? `<h2>Hi ${reg.full_name.split(' ')[0]}! 🎉</h2><p>Your ticket is confirmed!</p><div style="text-align:center;margin:20px 0"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(JSON.stringify({ ticket_id: reg.ticket_id, name: reg.full_name, nic: reg.nic }))}" width="200" height="200"/></div><p>School: ${reg.school}<br>Food: ${reg.food_preference}<br>Ticket ID: ${reg.ticket_id}</p><p><a href="https://peak25.vercel.app/status">View Ticket Online →</a></p>`
-
           : `<h2>Hi ${reg.full_name.split(' ')[0]},</h2><p>We could not verify your payment. Please contact the PEAK organizers.${reg.admin_note ? '<br><br>Note: ' + reg.admin_note : ''}</p>`,
-
       }),
-
     })
-
   } catch (e) {
-
     console.error('Email failed:', e)
-
   }
-
 }
 const updateStatus = async (id: string, status: RegistrationStatus) => {
   setActionLoading(true)
