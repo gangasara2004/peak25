@@ -76,67 +76,45 @@ function AdminDashboard() {
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3500) }
 
-
-
-const sendEmailNotification = async (reg: Registration, status: RegistrationStatus) => {
-  try {
-    await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-key': import.meta.env.VITE_BREVO_API_KEY,
-      },
-      body: JSON.stringify({
-        sender: { name: "PEAK '25 Meetup", email: 'gangasarajayawickrama@gmail.com' },
-        to: [{ email: reg.email, name: reg.full_name }],
-        subject: status === 'approved' ? "✅ Your PEAK '25 ticket is confirmed!" : "❌ PEAK '25 — Payment not verified",
-        htmlContent: status === 'approved'
-          ? `<h2>Hi ${reg.full_name.split(' ')[0]}! 🎉</h2><p>Your ticket is confirmed!</p><div style="text-align:center;margin:20px 0"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(JSON.stringify({ ticket_id: reg.ticket_id, name: reg.full_name, nic: reg.nic }))}" width="200" height="200"/></div><p>School: ${reg.school}<br>Food: ${reg.food_preference}<br>Ticket ID: ${reg.ticket_id}</p><p><a href="https://peak25.vercel.app/status">View Ticket Online →</a></p>`
-          : `<h2>Hi ${reg.full_name.split(' ')[0]},</h2><p>We could not verify your payment. Please contact the PEAK organizers.${reg.admin_note ? '<br><br>Note: ' + reg.admin_note : ''}</p>`,
-      }),
-    })
-  } catch (e) {
-    console.error('Email failed:', e)
+  const sendEmailNotification = async (reg: Registration, status: RegistrationStatus) => {
+    try {
+      await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': import.meta.env.VITE_BREVO_API_KEY,
+        },
+        body: JSON.stringify({
+          sender: { name: "PEAK '25 Meetup", email: 'your@gmail.com' },
+          to: [{ email: reg.email, name: reg.full_name }],
+          subject: status === 'approved' ? "✅ Your PEAK '25 ticket is confirmed!" : "❌ PEAK '25 — Payment not verified",
+          htmlContent: status === 'approved'
+            ? `<h2>Hi ${reg.full_name.split(' ')[0]}! 🎉</h2><p>Your ticket is confirmed!</p><div style="text-align:center;margin:20px 0"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(JSON.stringify({ ticket_id: reg.ticket_id, name: reg.full_name, nic: reg.nic }))}" width="200" height="200"/></div><p>School: ${reg.school}<br>Food: ${reg.food_preference}<br>Ticket ID: ${reg.ticket_id}</p><p><a href="https://peak25.vercel.app/status">View Ticket Online →</a></p>`
+            : `<h2>Hi ${reg.full_name.split(' ')[0]},</h2><p>We could not verify your payment.${reg.admin_note ? '<br><br>Note: ' + reg.admin_note : ''}</p>`,
+        }),
+      })
+    } catch (e) { console.error('Email failed:', e) }
   }
-}
-const updateStatus = async (id: string, status: RegistrationStatus) => {
-  setActionLoading(true)
-  const { error } = await supabase
-    .from('registrations')
-    .update({ status, admin_note: adminNote || null })
-    .eq('id', id)
 
-  if (!error) {
-    const { data: updatedReg } = await supabase
-      .from('registrations')
-      .select('*')
-      .eq('id', id)
-      .single()
-
-    if (updatedReg) {
-      try {
-        const { error: fnError } = await supabase.functions.invoke('send-ticket-email', {
-          body: { registration: updatedReg, status },
-        })
-        if (fnError) console.error('Email error:', fnError)
-        showToast(status === 'approved' ? '✓ Approved & email sent!' : '✗ Rejected & email sent.')
-      } catch (e) {
-        console.error('Email failed:', e)
-        showToast(status === 'approved' ? '✓ Approved (email failed)' : '✗ Rejected (email failed)')
+  const updateStatus = async (id: string, status: RegistrationStatus) => {
+    setActionLoading(true)
+    const { error } = await supabase.from('registrations').update({ status, admin_note: adminNote || null }).eq('id', id)
+    if (!error) {
+      const { data: updatedReg } = await supabase.from('registrations').select('*').eq('id', id).single()
+      if (updatedReg) {
+        try { await sendEmailNotification(updatedReg as Registration, status) } catch {}
       }
+      showToast(status === 'approved' ? '✓ Approved!' : status === 'rejected' ? '✗ Rejected.' : '↩ Moved to pending.')
+      setSelected(null); setAdminNote(''); fetchAll()
     }
-    setSelected(null)
-    setAdminNote('')
-    fetchAll()
+    setActionLoading(false)
   }
-  setActionLoading(false)
-}
 
-  // CSV Export
   const exportCSV = () => {
-    const headers = ['Name', 'Email', 'Phone', 'NIC', 'School', 'Food', 'Status', 'Checked In', 'Registered']
+    const headers = ['Name', 'Email', 'Phone', 'NIC', 'School', 'District Rank', 'Food', 'Status', 'Checked In', 'Registered']
     const rows = registrations.map(r => [
-      r.full_name, r.email, r.phone, r.nic, r.school, r.food_preference,
+      r.full_name, r.email, r.phone, r.nic, r.school,
+      r.district_rank ?? '—', r.food_preference,
       r.status, r.checked_in ? 'Yes' : 'No',
       new Date(r.created_at).toLocaleDateString('en-GB'),
     ])
@@ -165,57 +143,51 @@ const updateStatus = async (id: string, status: RegistrationStatus) => {
   }, [registrations, filter, search])
 
   return (
-    <div style={{ minHeight: 'calc(100vh - 57px)', padding: '32px 20px 60px' }}>
+    <div style={{ minHeight: 'calc(100vh - 57px)', padding: '28px 16px 60px' }}>
       <div className="container--wide">
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 800, marginBottom: 2 }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 800, marginBottom: 2 }}>
               Admin <span style={{ color: 'var(--yellow)' }}>Dashboard</span>
             </h1>
             <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>PEAK '25 Meetup · Registration Management</p>
           </div>
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             <button className="btn btn--secondary" onClick={exportCSV} style={{ fontSize: 13 }}>⬇ Export CSV</button>
             <button className="btn btn--secondary" onClick={() => supabase.auth.signOut()} style={{ fontSize: 13 }}>Sign Out</button>
           </div>
         </div>
 
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 14, marginBottom: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12, marginBottom: 24 }}>
           {[
             { label: 'Total', value: counts.all, color: 'var(--cyan)' },
             { label: 'Pending', value: counts.pending, color: 'var(--yellow)' },
             { label: 'Approved', value: counts.approved, color: 'var(--success)' },
             { label: 'Rejected', value: counts.rejected, color: 'var(--danger)' },
           ].map(stat => (
-            <div key={stat.label} className="card" style={{ textAlign: 'center', padding: '18px 12px' }}>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: 36, fontWeight: 800, color: stat.color, lineHeight: 1 }}>{stat.value}</div>
-              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{stat.label}</div>
+            <div key={stat.label} className="card" style={{ textAlign: 'center', padding: '16px 10px' }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 800, color: stat.color, lineHeight: 1 }}>{stat.value}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{stat.label}</div>
             </div>
           ))}
         </div>
 
         {/* Search + Filter */}
-        <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center' }}>
-          <div className="field" style={{ flex: '1 1 240px', marginBottom: 0 }}>
-            <input
-              type="text"
-              placeholder="🔍  Search by name, email, NIC, school…"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={{ fontSize: 14 }}
-            />
+        <div style={{ display: 'flex', gap: 10, marginBottom: 18, flexWrap: 'wrap', alignItems: 'center' }}>
+          <div className="field" style={{ flex: '1 1 220px', marginBottom: 0 }}>
+            <input type="text" placeholder="🔍 Search name, email, NIC, school…" value={search} onChange={e => setSearch(e.target.value)} style={{ fontSize: 14 }} />
           </div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {(['all', 'pending', 'approved', 'rejected'] as FilterStatus[]).map(f => (
               <button key={f} onClick={() => setFilter(f)}
                 className={`btn ${filter === f ? 'btn--primary' : 'btn--secondary'}`}
-                style={{ fontSize: 13, padding: '8px 16px' }}>
+                style={{ fontSize: 12, padding: '7px 14px' }}>
                 {f.charAt(0).toUpperCase() + f.slice(1)} ({f === 'all' ? counts.all : counts[f]})
               </button>
             ))}
-            <button className="btn btn--secondary" onClick={fetchAll} style={{ fontSize: 13, padding: '8px 16px' }}>↻</button>
+            <button className="btn btn--secondary" onClick={fetchAll} style={{ fontSize: 12, padding: '7px 14px' }}>↻</button>
           </div>
         </div>
 
@@ -228,28 +200,31 @@ const updateStatus = async (id: string, status: RegistrationStatus) => {
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border)' }}>
-                  {['Name', 'Email', 'NIC', 'School', 'Food', 'Registered', 'Status', 'Actions'].map(h => (
-                    <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>{h}</th>
+                  {['Name', 'NIC', 'School', 'Rank', 'Food', 'Date', 'Status', ''].map(h => (
+                    <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {filtered.map(r => (
-                  <tr key={r.id} style={{ borderBottom: '1px solid var(--border)', transition: 'background 0.15s', cursor: 'pointer' }}
+                  <tr key={r.id} style={{ borderBottom: '1px solid var(--border)', cursor: 'pointer', transition: 'background 0.15s' }}
                     onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-elevated)')}
                     onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-                    <td style={{ padding: '12px 14px', fontWeight: 500, whiteSpace: 'nowrap' }}>{r.full_name}</td>
-                    <td style={{ padding: '12px 14px', fontSize: 13, color: 'var(--text-muted)' }}>{r.email}</td>
-                    <td style={{ padding: '12px 14px', fontFamily: 'monospace', fontSize: 12 }}>{r.nic}</td>
-                    <td style={{ padding: '12px 14px', fontSize: 13, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.school}</td>
-                    <td style={{ padding: '12px 14px', fontSize: 12, color: 'var(--text-muted)', textTransform: 'capitalize' }}>{r.food_preference}</td>
-                    <td style={{ padding: '12px 14px', fontSize: 12, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{new Date(r.created_at).toLocaleDateString('en-GB')}</td>
-                    <td style={{ padding: '12px 14px' }}><span className={`badge badge--${r.status}`}>{r.status}</span></td>
-                    <td style={{ padding: '12px 14px' }}>
-                      <button className="btn btn--secondary" style={{ fontSize: 12, padding: '6px 14px' }}
+                    <td style={{ padding: '11px 12px', fontWeight: 600 }}>
+                      <div>{r.full_name}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 400 }}>{r.email}</div>
+                    </td>
+                    <td style={{ padding: '11px 12px', fontFamily: 'monospace', fontSize: 12 }}>{r.nic}</td>
+                    <td style={{ padding: '11px 12px', fontSize: 13, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.school}</td>
+                    <td style={{ padding: '11px 12px', fontSize: 13, color: 'var(--cyan)', fontWeight: 600 }}>#{r.district_rank ?? '—'}</td>
+                    <td style={{ padding: '11px 12px', fontSize: 12, color: 'var(--text-muted)', textTransform: 'capitalize' }}>{r.food_preference}</td>
+                    <td style={{ padding: '11px 12px', fontSize: 12, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{new Date(r.created_at).toLocaleDateString('en-GB')}</td>
+                    <td style={{ padding: '11px 12px' }}><span className={`badge badge--${r.status}`}>{r.status}</span></td>
+                    <td style={{ padding: '11px 12px' }}>
+                      <button className="btn btn--secondary" style={{ fontSize: 12, padding: '6px 12px' }}
                         onClick={() => { setSelected(r); setAdminNote(r.admin_note || '') }}>
                         Review →
                       </button>
@@ -258,58 +233,62 @@ const updateStatus = async (id: string, status: RegistrationStatus) => {
                 ))}
               </tbody>
             </table>
-            <div style={{ padding: '10px 14px', fontSize: 12, color: 'var(--text-muted)' }}>
+            <div style={{ padding: '8px 12px', fontSize: 12, color: 'var(--text-muted)' }}>
               Showing {filtered.length} of {registrations.length} registrations
             </div>
           </div>
         )}
       </div>
 
-      {/* Detail Modal */}
+      {/* Modal */}
       {selected && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: 20 }}
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: 16 }}
           onClick={e => { if (e.target === e.currentTarget) setSelected(null) }}>
           <div className="card fade-up" style={{ maxWidth: 560, width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18 }}>Registration Review</h3>
-              <button className="btn btn--secondary" onClick={() => setSelected(null)} style={{ padding: '6px 14px', fontSize: 13 }}>✕</button>
+              <button className="btn btn--secondary" onClick={() => setSelected(null)} style={{ padding: '6px 12px', fontSize: 13 }}>✕</button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 20 }}>
-              {[['Full Name', selected.full_name], ['Email', selected.email], ['Phone', selected.phone], ['NIC', selected.nic],
-                ['School', selected.school], ['Food Preference', selected.food_preference],
-                ['Registered', new Date(selected.created_at).toLocaleString('en-GB')], ['Status', selected.status]].map(([label, value]) => (
+              {[['Full Name', selected.full_name], ['Email', selected.email], ['Phone', selected.phone],
+                ['NIC', selected.nic], ['School', selected.school],
+                ['District Rank', selected.district_rank ? `#${selected.district_rank}` : '—'],
+                ['Food', selected.food_preference], ['Status', selected.status],
+                ['Registered', new Date(selected.created_at).toLocaleString('en-GB')],
+                ['Checked In', selected.checked_in ? `Yes — ${selected.checked_in_at ? new Date(selected.checked_in_at).toLocaleTimeString('en-GB') : ''}` : 'No'],
+              ].map(([label, value]) => (
                 <div key={label}>
                   <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>{label}</div>
-                  <div style={{ fontSize: 14, fontWeight: 500, textTransform: label === 'Food Preference' || label === 'Status' ? 'capitalize' : 'none' }}>{value}</div>
+                  <div style={{ fontSize: 14, fontWeight: 500, textTransform: label === 'Food' || label === 'Status' ? 'capitalize' : 'none' }}>{value}</div>
                 </div>
               ))}
             </div>
             {selected.payment_slip_url && (
               <div style={{ marginBottom: 20 }}>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Payment Slip</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Payment Slip</div>
                 <a href={selected.payment_slip_url} target="_blank" rel="noreferrer">
                   <img src={selected.payment_slip_url} alt="Payment slip"
-                    style={{ width: '100%', maxHeight: 300, objectFit: 'contain', borderRadius: 8, border: '1px solid var(--border)', background: '#fff' }}
+                    style={{ width: '100%', maxHeight: 280, objectFit: 'contain', borderRadius: 8, border: '1px solid var(--border)', background: '#fff' }}
                     onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
                   <div style={{ textAlign: 'center', marginTop: 6, fontSize: 12, color: 'var(--cyan)' }}>Click to open full size ↗</div>
                 </a>
               </div>
             )}
             <div className="field" style={{ marginBottom: 16 }}>
-              <label>Admin Note (optional, shown to attendee if rejected)</label>
+              <label>Admin Note (shown to attendee if rejected)</label>
               <textarea placeholder="e.g. Payment amount doesn't match…" value={adminNote}
-                onChange={e => setAdminNote(e.target.value)} style={{ resize: 'vertical', minHeight: 72 }} />
+                onChange={e => setAdminNote(e.target.value)} style={{ resize: 'vertical', minHeight: 68 }} />
             </div>
             {selected.status !== 'approved' && (
               <button className="btn btn--success btn--full" style={{ marginBottom: 10 }}
                 onClick={() => updateStatus(selected.id, 'approved')} disabled={actionLoading}>
-                {actionLoading ? <div className="spinner" /> : '✓ Approve & Send Email'}
+                {actionLoading ? <div className="spinner" /> : '✓ Approve & Generate Ticket'}
               </button>
             )}
             {selected.status !== 'rejected' && (
               <button className="btn btn--danger btn--full"
                 onClick={() => updateStatus(selected.id, 'rejected')} disabled={actionLoading}>
-                {actionLoading ? <div className="spinner" /> : '✗ Reject & Notify'}
+                {actionLoading ? <div className="spinner" /> : '✗ Reject Registration'}
               </button>
             )}
             {selected.status !== 'pending' && (
@@ -319,18 +298,16 @@ const updateStatus = async (id: string, status: RegistrationStatus) => {
               </button>
             )}
             <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
-              <button
-                className="btn btn--full"
+              <button className="btn btn--full"
                 style={{ background: 'transparent', border: '1px solid rgba(255,77,109,0.3)', color: 'var(--danger)', fontSize: 13 }}
                 onClick={async () => {
                   if (!confirm(`Delete registration for ${selected.full_name}? This cannot be undone.`)) return
                   setActionLoading(true)
                   const { error } = await supabase.from('registrations').delete().eq('id', selected.id)
-                  if (!error) { showToast('🗑 Registration deleted.'); setSelected(null); fetchAll() }
+                  if (!error) { showToast('🗑 Deleted.'); setSelected(null); fetchAll() }
                   setActionLoading(false)
                 }}
-                disabled={actionLoading}
-              >
+                disabled={actionLoading}>
                 🗑 Delete Registration
               </button>
             </div>
