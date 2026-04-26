@@ -137,7 +137,7 @@ export default function RegisterPage() {
             <div className="rp-meta-dot">·</div>
             <div className="rp-meta-item">🏡 <span>E L Senanayake Auditorium</span></div>
           </div>
-          <div className="rp-price">Ticket Price: <span>Rs. 1,300.00</span></div>
+          <div className="rp-price">Ticket Price · Rs. 1,300.00</div>
         </div>
       </div>
 
@@ -331,8 +331,7 @@ function SuccessScreen({ email }: { email: string }) {
         .rp-success-title { font-family: var(--font-display); font-size: 26px; color: var(--cyan); margin-bottom: 12px; }
         .rp-success-desc { color: var(--text-muted); font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
         .rp-success-email { background: var(--bg-elevated); border-radius: var(--radius); padding: 12px 16px; font-size: 13px; color: var(--text-muted); margin-bottom: 24px; word-break: break-all; }
-        .rp-price { display: inline-block; background: var(--yellow-dim); border: 1px solid rgba(255,190,0,0.25); border-radius: 20px; color: var(--text-muted); font-size: 13px; padding: 6px 18px; margin-top: 14px; }
-        .rp-price span { color: var(--yellow); font-weight: 700; }
+        .rp-price { display: inline-block; background: var(--yellow-dim); border: 1px solid rgba(255,190,0,0.25); border-radius: 20px; color: var(--yellow); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; padding: 5px 16px; margin-top: 14px; text-transform: uppercase; }
         .rp-meta { display: flex; align-items: center; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
         .rp-meta-dot { color: var(--border-hover); }
         .rp-meta-item { display: flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: 13px; color: var(--text-muted); }
