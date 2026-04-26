@@ -15,6 +15,7 @@ export interface Registration {
   phone: string
   nic: string
   school: string
+  district_rank: number | null
   food_preference: FoodPreference
   payment_slip_url: string | null
   status: RegistrationStatus
