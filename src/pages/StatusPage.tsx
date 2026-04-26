@@ -145,12 +145,12 @@ function ApprovedCard({ reg }: { reg: Registration }) {
       <body>
         <div class="ticket">
           <div class="ticket-header">
-            <h1>PEAK '25</h1>
-            <p>MEETUP · THE GATHERING OF FUTURE ENGINEERS</p>
+            <h1>PEAK '25 Meetup</h1>
+            <p>THE GATHERING OF FUTURE ENGINEERS</p>
           </div>
           <div class="ticket-body">
             <div class="ticket-name">${reg.full_name}</div>
-            <div class="ticket-details">${reg.school} · ${reg.food_preference}</div>
+            <div class="ticket-details">${reg.school} · District Rank #${reg.district_rank ?? '—'}</div>
             <div class="ticket-qr">
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrValue)}" width="200" height="200" />
             </div>
@@ -175,7 +175,7 @@ function ApprovedCard({ reg }: { reg: Registration }) {
         {reg.full_name}
       </h3>
       <p style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 24 }}>
-        {reg.school} · {reg.food_preference}
+        {reg.school} · District Rank #{reg.district_rank ?? '—'}
       </p>
 
       {/* QR Code */}
