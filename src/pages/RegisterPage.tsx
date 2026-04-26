@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
 const EVENT_DATE = new Date('2026-05-16T08:00:00')
-const EVENT_VENUE = 'YMBA Hall - Kandy'
+const EVENT_VENUE = 'Your Venue Name Here'
 
 function useCountdown(target: Date) {
   const calc = () => {
@@ -111,7 +111,7 @@ export default function RegisterPage() {
         <div className="rp-glow" />
         <div className="rp-hero-inner">
           <span className="rp-tag">Pre Engineering Association Kandy</span>
-          <h1 className="rp-title">PEAK '25 <span className="rp-title-accent">Meetup</span></h1>
+          <h1 className="rp-title">PEAK <span className="rp-title-accent">'25</span></h1>
           <p className="rp-subtitle">MEETUP · The Gathering of Future Engineers</p>
 
           {/* Countdown */}
@@ -129,15 +129,13 @@ export default function RegisterPage() {
             <div className="rp-cd-over">🎉 The event is happening now!</div>
           )}
 
-          {/* Event meta */}
-          <div className="rp-meta">
-            <div className="rp-meta-item">🗓️ <span>Saturday, 16th May 2026</span></div>
-            <div className="rp-meta-dot">·</div>
-            <div className="rp-meta-item">🕘 <span>9.00 AM onwards</span></div>
-            <div className="rp-meta-dot">·</div>
-            <div className="rp-meta-item">🏡 <span>E L Senanayake Auditorium</span></div>
+          {/* Event details */}
+          <div className="rp-event-details">
+            <div className="rp-detail-badge">🗓️ Saturday, 16th May 2026</div>
+            <div className="rp-detail-badge">🕘 9.00 AM onwards</div>
+            <div className="rp-detail-badge">🏡 E L Senanayake Auditorium</div>
+            <div className="rp-detail-badge rp-detail-badge--yellow">🎟️ Rs. 1,300.00</div>
           </div>
-          <div className="rp-price">Ticket Price · Rs. 1,300.00</div>
         </div>
       </div>
 
@@ -262,9 +260,10 @@ export default function RegisterPage() {
         .rp-cd-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
         .rp-cd-over { display: inline-block; background: rgba(0,232,150,0.1); border: 1px solid rgba(0,232,150,0.25); border-radius: 20px; color: var(--success); padding: 8px 20px; font-size: 14px; margin-bottom: 18px; }
 
-        /* Event meta */
-        .rp-meta { display: flex; align-items: center; gap: 10px; justify-content: center; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; margin-top: 4px; }
-        .rp-meta-dot { color: var(--border-hover); }
+        /* Event details */
+        .rp-event-details { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 20px; }
+        .rp-detail-badge { background: var(--cyan-dim); border: 1px solid var(--border); border-radius: 20px; color: var(--cyan); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; padding: 6px 16px; text-transform: uppercase; }
+        .rp-detail-badge--yellow { background: var(--yellow-dim); border-color: rgba(255,190,0,0.25); color: var(--yellow); }
 
         /* Form wrap */
         .rp-form-wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 60px; }
@@ -331,11 +330,6 @@ function SuccessScreen({ email }: { email: string }) {
         .rp-success-title { font-family: var(--font-display); font-size: 26px; color: var(--cyan); margin-bottom: 12px; }
         .rp-success-desc { color: var(--text-muted); font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
         .rp-success-email { background: var(--bg-elevated); border-radius: var(--radius); padding: 12px 16px; font-size: 13px; color: var(--text-muted); margin-bottom: 24px; word-break: break-all; }
-        .rp-price { display: inline-block; background: var(--yellow-dim); border: 1px solid rgba(255,190,0,0.25); border-radius: 20px; color: var(--yellow); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; padding: 5px 16px; margin-top: 14px; text-transform: uppercase; }
-        .rp-meta { display: flex; align-items: center; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
-        .rp-meta-dot { color: var(--border-hover); }
-        .rp-meta-item { display: flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: 13px; color: var(--text-muted); }
-        .rp-meta-item span { color: var(--text); font-weight: 500; }
       `}</style>
     </div>
   )
