@@ -206,26 +206,17 @@ export default function RegisterPage() {
 
             {/* Bank Details */}
             <div className="rp-payment-box rp-payment-box--inline">
-              <div className="rp-payment-title">💳 Payment Details — Click to Copy</div>
+              <div className="rp-payment-title">💳 Payment Details — Tap to Copy</div>
               {[
                 { label: 'Account Name', value: 'Udara Bandaranayake' },
                 { label: 'Account Number', value: '1007 5527 3937' },
                 { label: 'Bank', value: 'Sampath Bank PLC' },
                 { label: 'Branch', value: 'Kandy Super Branch' },
               ].map(({ label, value }) => (
-    
-                <div key={label} className="rp-payment-row rp-payment-row--copy"
-                  onClick={() => { navigator.clipboard.writeText(value); }}>
-                  <span>{label}</span>
-                  <div className="rp-copy-right">
-                    <strong>{value}</strong>
-                    <span className="rp-copy-icon">⎘</span>
-                  </div>
-                </div>
+                <CopyRow key={label} label={label} value={value} />
               ))}
               <div className="rp-payment-note">Transfer Rs. 1,500.00 and upload your slip below</div>
             </div>
-
             {/* Payment Slip */}
             <div className="field">
               <label>Payment Slip</label>
@@ -368,6 +359,33 @@ function SuccessScreen({ email }: { email: string }) {
         .rp-payment-row--copy:hover .rp-copy-icon { opacity: 1; }.rp-payment-box--inline { max-width: 100%; margin-top: 0; }
         .rp-success-email { background: var(--bg-elevated); border-radius: var(--radius); padding: 12px 16px; font-size: 13px; color: var(--text-muted); margin-bottom: 24px; word-break: break-all; }
       `}</style>
+    </div>
+  )
+}
+function CopyRow({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = useState(false)
+  const copy = () => {
+    const el = document.createElement('textarea')
+    el.value = value
+    el.style.position = 'fixed'
+    el.style.opacity = '0'
+    document.body.appendChild(el)
+    el.focus()
+    el.select()
+    document.execCommand('copy')
+    document.body.removeChild(el)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  return (
+    <div className="rp-payment-row rp-payment-row--copy" onClick={copy}>
+      <span>{label}</span>
+      <div className="rp-copy-right">
+        <strong>{value}</strong>
+        <span className="rp-copy-icon" style={{ color: copied ? 'var(--success)' : 'var(--cyan)' }}>
+          {copied ? '✓' : '⎘'}
+        </span>
+      </div>
     </div>
   )
 }
