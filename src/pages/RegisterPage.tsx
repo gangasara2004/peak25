@@ -206,11 +206,23 @@ export default function RegisterPage() {
 
             {/* Bank Details */}
             <div className="rp-payment-box rp-payment-box--inline">
-              <div className="rp-payment-title">💳 Payment Details</div>
-              <div className="rp-payment-row"><span>Bank</span><strong>SAMPATH BANK PLC</strong></div>
-              <div className="rp-payment-row"><span>Account Name</span><strong>Udara Bandaranayake</strong></div>
-              <div className="rp-payment-row"><span>Account Number</span><strong>1007 5527 3937</strong></div>
-              <div className="rp-payment-row"><span>Branch</span><strong>KANDY SUPER BRANCH</strong></div>
+              <div className="rp-payment-title">💳 Payment Details — Click to Copy</div>
+              {[
+                { label: 'Account Name', value: 'Udara Bandaranayake' },
+                { label: 'Account Number', value: '1007 5527 3937' },
+                { label: 'Bank', value: 'Sampath Bank PLC' },
+                { label: 'Branch', value: 'Kandy Super Branch' },
+              ].map(({ label, value }) => (
+    
+                <div key={label} className="rp-payment-row rp-payment-row--copy"
+                  onClick={() => { navigator.clipboard.writeText(value); }}>
+                  <span>{label}</span>
+                  <div className="rp-copy-right">
+                    <strong>{value}</strong>
+                    <span className="rp-copy-icon">⎘</span>
+                  </div>
+                </div>
+              ))}
               <div className="rp-payment-note">Transfer Rs. 1,500.00 and upload your slip below</div>
             </div>
 
@@ -349,7 +361,11 @@ function SuccessScreen({ email }: { email: string }) {
         .rp-success-emoji { font-size: 56px; margin-bottom: 16px; }
         .rp-success-title { font-family: var(--font-display); font-size: 26px; color: var(--cyan); margin-bottom: 12px; }
         .rp-success-desc { color: var(--text-muted); font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
-        .rp-payment-box--inline { max-width: 100%; margin-top: 0; }
+        .rp-payment-row--copy { cursor: pointer; border-radius: 6px; padding: 8px 6px; margin: 0 -6px; transition: background 0.15s; }
+        .rp-payment-row--copy:hover { background: var(--cyan-dim); }
+        .rp-copy-right { display: flex; align-items: center; gap: 8px; }
+        .rp-copy-icon { font-size: 14px; color: var(--cyan); opacity: 0.6; }
+        .rp-payment-row--copy:hover .rp-copy-icon { opacity: 1; }.rp-payment-box--inline { max-width: 100%; margin-top: 0; }
         .rp-success-email { background: var(--bg-elevated); border-radius: var(--radius); padding: 12px 16px; font-size: 13px; color: var(--text-muted); margin-bottom: 24px; word-break: break-all; }
       `}</style>
     </div>
