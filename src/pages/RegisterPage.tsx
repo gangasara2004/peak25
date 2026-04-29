@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
-const EVENT_DATE = new Date('2026-05-16T08:00:00')
-const EVENT_VENUE = 'Your Venue Name Here'
+const EVENT_DATE = new Date('2026-05-16T09:00:00')
+const EVENT_VENUE = 'E L Senanayake Auditorium'
 
 function useCountdown(target: Date) {
   const calc = () => {
