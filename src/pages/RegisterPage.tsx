@@ -136,6 +136,17 @@ export default function RegisterPage() {
             <div className="rp-detail-badge">🏡 E L Senanayake Auditorium</div>
             <div className="rp-detail-badge rp-detail-badge--yellow">🎟️ Rs. 1,300.00</div>
           </div>
+
+          {/* Payment details */}
+          <div className="rp-payment-box">
+            <div className="rp-payment-title">💳 Payment Details</div>
+            <div className="rp-payment-row"><span>Bank</span><strong>Bank of Ceylon</strong></div>
+            <div className="rp-payment-row"><span>Account Name</span><strong>Your Account Name</strong></div>
+            <div className="rp-payment-row"><span>Account Number</span><strong>1234567890</strong></div>
+            <div className="rp-payment-row"><span>Branch</span><strong>Kandy</strong></div>
+            <div className="rp-payment-note">Upload your payment slip below after transferring Rs. 1,300.00</div>
+          </div>
+          </div>
         </div>
       </div>
 
@@ -158,7 +169,7 @@ export default function RegisterPage() {
               </div>
               <div className="field">
                 <label>Email Address</label>
-                <input type="email" placeholder="e.g. kasun@email.com" value={form.email} onChange={e => set('email', e.target.value)} />
+                <input type="email" placeholder="e.g. kasun123@email.com" value={form.email} onChange={e => set('email', e.target.value)} />
               </div>
             </div>
 
@@ -329,6 +340,13 @@ function SuccessScreen({ email }: { email: string }) {
         .rp-success-emoji { font-size: 56px; margin-bottom: 16px; }
         .rp-success-title { font-family: var(--font-display); font-size: 26px; color: var(--cyan); margin-bottom: 12px; }
         .rp-success-desc { color: var(--text-muted); font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
+        .rp-payment-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; margin-top: 20px; max-width: 380px; margin-left: auto; margin-right: auto; text-align: left; }
+        .rp-payment-title { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; text-align: center; }
+        .rp-payment-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .rp-payment-row:last-of-type { border-bottom: none; }
+        .rp-payment-row span { color: var(--text-muted); }
+        .rp-payment-row strong { color: var(--text); font-weight: 600; }
+        .rp-payment-note { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
         .rp-success-email { background: var(--bg-elevated); border-radius: var(--radius); padding: 12px 16px; font-size: 13px; color: var(--text-muted); margin-bottom: 24px; word-break: break-all; }
       `}</style>
     </div>
