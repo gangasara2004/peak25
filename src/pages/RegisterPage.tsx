@@ -207,10 +207,10 @@ export default function RegisterPage() {
             {/* Bank Details */}
             <div className="rp-payment-box rp-payment-box--inline">
               <div className="rp-payment-title">💳 Payment Details</div>
-              <div className="rp-payment-row"><span>Bank</span><strong>Bank of Ceylon</strong></div>
-              <div className="rp-payment-row"><span>Account Name</span><strong>Your Account Name</strong></div>
-              <div className="rp-payment-row"><span>Account Number</span><strong>1234567890</strong></div>
-              <div className="rp-payment-row"><span>Branch</span><strong>Kandy</strong></div>
+              <div className="rp-payment-row"><span>Bank</span><strong>SAMPATH BANK PLC</strong></div>
+              <div className="rp-payment-row"><span>Account Name</span><strong>Udara Bandaranayake</strong></div>
+              <div className="rp-payment-row"><span>Account Number</span><strong>1007 5527 3937</strong></div>
+              <div className="rp-payment-row"><span>Branch</span><strong>KANDY SUPER BRANCH</strong></div>
               <div className="rp-payment-note">Transfer Rs. 1,500.00 and upload your slip below</div>
             </div>
 
