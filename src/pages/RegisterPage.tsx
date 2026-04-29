@@ -136,16 +136,6 @@ export default function RegisterPage() {
             <div className="rp-detail-badge">🏡 E L Senanayake Auditorium</div>
             <div className="rp-detail-badge rp-detail-badge--yellow">🎟️ Rs. 1,500.00</div>
           </div>
-
-          {/* Payment details */}
-          <div className="rp-payment-box">
-            <div className="rp-payment-title">💳 Payment Details</div>
-            <div className="rp-payment-row"><span>Bank</span><strong>Bank of Ceylon</strong></div>
-            <div className="rp-payment-row"><span>Account Name</span><strong>Your Account Name</strong></div>
-            <div className="rp-payment-row"><span>Account Number</span><strong>1234567890</strong></div>
-            <div className="rp-payment-row"><span>Branch</span><strong>Kandy</strong></div>
-            <div className="rp-payment-note">Upload your payment slip below after transferring Rs. 1,300.00</div>
-          </div>
         </div>
       </div>
 
@@ -214,9 +204,20 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* Bank Details */}
+            <div className="rp-payment-box rp-payment-box--inline">
+              <div className="rp-payment-title">💳 Payment Details</div>
+              <div className="rp-payment-row"><span>Bank</span><strong>Bank of Ceylon</strong></div>
+              <div className="rp-payment-row"><span>Account Name</span><strong>Your Account Name</strong></div>
+              <div className="rp-payment-row"><span>Account Number</span><strong>1234567890</strong></div>
+              <div className="rp-payment-row"><span>Branch</span><strong>Kandy</strong></div>
+              <div className="rp-payment-note">Transfer Rs. 1,500.00 and upload your slip below</div>
+            </div>
+
             {/* Payment Slip */}
             <div className="field">
               <label>Payment Slip</label>
+              
               <div
                 className={`rp-drop ${dragOver ? 'rp-drop--over' : ''} ${form.slip ? 'rp-drop--done' : ''}`}
                 onClick={() => fileRef.current?.click()}
@@ -348,6 +349,7 @@ function SuccessScreen({ email }: { email: string }) {
         .rp-success-emoji { font-size: 56px; margin-bottom: 16px; }
         .rp-success-title { font-family: var(--font-display); font-size: 26px; color: var(--cyan); margin-bottom: 12px; }
         .rp-success-desc { color: var(--text-muted); font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
+        .rp-payment-box--inline { max-width: 100%; margin-top: 0; }
         .rp-success-email { background: var(--bg-elevated); border-radius: var(--radius); padding: 12px 16px; font-size: 13px; color: var(--text-muted); margin-bottom: 24px; word-break: break-all; }
       `}</style>
     </div>
