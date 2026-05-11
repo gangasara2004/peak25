@@ -103,7 +103,7 @@ export default function RegisterPage() {
   }
 
   if (step === 'success') return <SuccessScreen email={form.email} />
-  const REGISTRATION_CLOSED = true // ← set to false to reopen
+  const REGISTRATION_CLOSED = false // ← set to false to reopen
   if (REGISTRATION_CLOSED) return <ClosedScreen />
   return (
     <div className="rp">
@@ -140,8 +140,19 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Form */}
+{/* Form */}
       <div className="rp-form-wrap">
+        {REGISTRATION_CLOSED ? (
+          <div className="card fade-up" style={{ textAlign: 'center', padding: '40px 32px' }}>
+            <div style={{ fontSize: 48, marginBottom: 14 }}>🔒</div>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 24, color: 'var(--cyan)', marginBottom: 10 }}>Registration Closed</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: 14, lineHeight: 1.7, marginBottom: 24 }}>
+              Registration for <strong style={{ color: 'var(--text)' }}>PEAK '25 Meetup</strong> is now closed.
+              If you have already registered, check your ticket status below.
+            </p>
+            <a href="/status" className="btn btn--primary btn--full">Check My Ticket →</a>
+          </div>
+        ) : (
         <div className="card rp-card">
           <div className="rp-card-header">
             <h2 className="rp-card-title">Registration Details</h2>
@@ -254,6 +265,8 @@ export default function RegisterPage() {
             </button>
           </form>
         </div>
+      </div>
+  )}
       </div>
 
       <style>{`
