@@ -103,7 +103,8 @@ export default function RegisterPage() {
   }
 
   if (step === 'success') return <SuccessScreen email={form.email} />
-
+  const REGISTRATION_CLOSED = true // ← set to false to reopen
+  if (REGISTRATION_CLOSED) return <ClosedScreen />
   return (
     <div className="rp">
       {/* Hero */}
@@ -385,6 +386,28 @@ function CopyRow({ label, value }: { label: string; value: string }) {
         <span className="rp-copy-icon" style={{ color: copied ? 'var(--success)' : 'var(--cyan)' }}>
           {copied ? '✓' : '⎘'}
         </span>
+      </div>
+    </div>
+  )
+}
+function ClosedScreen() {
+  return (
+    <div style={{ minHeight: 'calc(100vh - 57px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div className="card fade-up" style={{ maxWidth: 480, width: '100%', textAlign: 'center', padding: '48px 32px' }}>
+        <div style={{ fontSize: 56, marginBottom: 16 }}>🔒</div>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 28, color: 'var(--cyan)', marginBottom: 12 }}>
+          Registration Closed
+        </h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: 15, lineHeight: 1.7, marginBottom: 28 }}>
+          Registration for <strong style={{ color: 'var(--text)' }}>PEAK '25 Meetup</strong> is now closed.
+          If you have already registered, check your ticket status below.
+        </p>
+        <div className="rp-event-details" style={{ justifyContent: 'center', marginBottom: 28 }}>
+          <div className="rp-detail-badge">🗓️ Saturday, 16th May 2026</div>
+          <div className="rp-detail-badge">🕘 9.00 AM onwards</div>
+          <div className="rp-detail-badge">🏡 E L Senanayake Auditorium</div>
+        </div>
+        <a href="/status" className="btn btn--primary btn--full">Check My Ticket →</a>
       </div>
     </div>
   )
